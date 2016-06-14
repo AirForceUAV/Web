@@ -17,6 +17,9 @@
    
     <div id="EKF"></div>
 	<div id="Mode"></div>
+    <div id="Status"></div>
+    
+    <div id="decision"><h>Decision</h></div>
 	
 	<script src="three.min.js"></script>
 
@@ -56,14 +59,28 @@
     #EKF {
     	position: absolute;
     	left: 20px;
-    	top: 250px;
+    	top: 230px;
     	font-size: 17px;
     }
     #Mode {
     	position: absolute;
     	left: 20px;
-    	top: 270px;
+    	top: 250px;
     	font-size: 17px;
+    }
+    #Status {
+        position: absolute;
+        left: 20px;
+        top: 270px;
+        font-size: 17px;
+    }
+    #decision {
+        position: absolute;
+        top: 630px;
+        left: 50px;
+        height: 200px;
+        width: 700px;
+        overflow: scroll;
     }
 
     </style>

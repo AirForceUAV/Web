@@ -30,6 +30,8 @@ var channelEig = [];
 
 var attitudeTmp = [0,0,0];
 
+var decision = [];
+
 // battery option
 bOption = {
     title: {
@@ -424,6 +426,7 @@ function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
   console.log("onConnect");
   client.subscribe("FlightLog", 1);
+  client.subscribe("Navigation", 1);
 }
 
 // called when the client loses its connection
@@ -439,132 +442,154 @@ function onMessageArrived(message) {
     console.log(typeof message.payloadString)
     dataTest = eval('(' + message.payloadString + ')');
     // dataTest = JSON.stringify(dataTest);
-    console.log(typeof dataTest);
     // console.log(dataTest.Battery);
+    console.log(message.destinationName);
 
-	// battery
-	if(typeof dataTest.Battery == 'string'){
-		batteryTmp = dataTest.Battery.split(",")
-	}
-	console.log(typeof dataTest.Battery);
-    batteryTmp = dataTest.Battery.split(",")
-    voltage.push(batteryTmp[0]);
-    current.push(batteryTmp[1]);
-    level.push(batteryTmp[2]);
+    if (message.destinationName == "FlightLog") {
+        // battery
+        if(typeof dataTest.Battery == 'string'){
+            batteryTmp = dataTest.Battery.split(",")
+        }
+        console.log(typeof dataTest.Battery);
+        batteryTmp = dataTest.Battery.split(",")
+        voltage.push(batteryTmp[0]);
+        current.push(batteryTmp[1]);
+        level.push(batteryTmp[2]);
 
-    // time
-    now = new Date();
-    now.setTime(dataTest.TimeStamp * 1000);
-    dateTmp = now.toLocaleTimeString();
-    date.push(dateTmp);
+        // time
+        now = new Date();
+        now.setTime(dataTest.TimeStamp * 1000);
+        dateTmp = now.toLocaleTimeString();
+        date.push(dateTmp);
 
-    // channels
-    channelsTmp = dataTest.ServoOutput.split(",");
-    channelOne.push(channelsTmp[0]);
-    channelTwo.push(channelsTmp[1]);
-    channelThr.push(channelsTmp[2]);
-    channelFou.push(channelsTmp[3]);
-    channelFiv.push(channelsTmp[4]);
-    channelSix.push(channelsTmp[5]);
-    channelSev.push(channelsTmp[6]);
-    channelEig.push(channelsTmp[7]);
-    // channelFiv.push(1500);
+        // channels
+        channelsTmp = dataTest.ServoOutput.split(",");
+        channelOne.push(channelsTmp[0]);
+        channelTwo.push(channelsTmp[1]);
+        channelThr.push(channelsTmp[2]);
+        channelFou.push(channelsTmp[3]);
+        channelFiv.push(channelsTmp[4]);
+        channelSix.push(channelsTmp[5]);
+        channelSev.push(channelsTmp[6]);
+        channelEig.push(channelsTmp[7]);
+        // channelFiv.push(1500);
 
-    // velocity
-    velocityTmp = dataTest.Velocity.split(",");
-	EKF = dataTest.EKF;
-	Mode = dataTest.Mode;
+        // velocity
+        velocityTmp = dataTest.Velocity.split(",");
+        EKF = dataTest.EKF;
+        Mode = dataTest.Mode;
+        Status = dataTest.SystemStatus;
 
-	// attitude
-	attitudeTmp = dataTest.Attitude.split(",");
+        // attitude
+        attitudeTmp = dataTest.Attitude.split(",");
 
-    x = document.getElementById("EKF");  //查找元素
-	x.innerHTML="EKF : " + EKF + " ";
+        x = document.getElementById("EKF");  //查找元素
+        x.innerHTML="EKF : " + EKF + " ";
 
-	y = document.getElementById("Mode");  //查找元素
-	y.innerHTML="Mode : " + Mode + " ";
+        y = document.getElementById("Mode");  //查找元素
+        y.innerHTML="Mode : " + Mode + " ";
 
-    len = date.length
-    if (len > 20) {
-    	voltage.shift();
-        current.shift();
-        level.shift();
+        z = document.getElementById("Status");  //查找元素
+        z.innerHTML="System Status : " + Status + " ";
 
-    	date.shift();
+        len = date.length
+        if (len > 20) {
+            voltage.shift();
+            current.shift();
+            level.shift();
 
-    	channelOne.shift();
-        channelTwo.shift();
-        channelThr.shift();
-        channelFou.shift();
-        channelFiv.shift();
-        channelSix.shift();
-        channelSev.shift();
-        channelEig.shift();
+            date.shift();
 
-    };
+            channelOne.shift();
+            channelTwo.shift();
+            channelThr.shift();
+            channelFou.shift();
+            channelFiv.shift();
+            channelSix.shift();
+            channelSev.shift();
+            channelEig.shift();
 
-    batteryChart.setOption({
-    	xAxis:  {
-	        data: date
-    	},
-        series: [{
-            name: 'Voltage',
-            data: voltage
-        },
-        {
-        	name: "Current",
-        	data: current
-        },
-        {
-            name: 'Level',
-            data: level
-        }]
-    });
+        };
+
+        batteryChart.setOption({
+            xAxis:  {
+                data: date
+            },
+            series: [{
+                name: 'Voltage',
+                data: voltage
+            },
+            {
+                name: "Current",
+                data: current
+            },
+            {
+                name: 'Level',
+                data: level
+            }]
+        });
 
 
 
-	channelsChart.setOption({
-    	xAxis:  {
-	        data: date
-    	},
-        series: [{
-            name: 'Channel 1',
-            data: channelOne
-        },
-        {
-        	name: "Channel 2",
-        	data: channelTwo
-        },
-        {
-            name: 'Channel 3',
-            data: channelThr
-        },
-        {
-            name: 'Channel 4',
-            data: channelFou
-        },
-        {
-            name: 'Channel 5',
-            data: channelFiv
-        },
-        {
-            name: 'Channel 6',
-            data: channelSix
-        },
-        {
-            name: 'Channel 7',
-            data: channelSev
-        },
-        {
-            name: 'Channel 8',
-            data: channelEig
-        }]
-    });
+        channelsChart.setOption({
+            xAxis:  {
+                data: date
+            },
+            series: [{
+                name: 'Channel 1',
+                data: channelOne
+            },
+            {
+                name: "Channel 2",
+                data: channelTwo
+            },
+            {
+                name: 'Channel 3',
+                data: channelThr
+            },
+            {
+                name: 'Channel 4',
+                data: channelFou
+            },
+            {
+                name: 'Channel 5',
+                data: channelFiv
+            },
+            {
+                name: 'Channel 6',
+                data: channelSix
+            },
+            {
+                name: 'Channel 7',
+                data: channelSev
+            },
+            {
+                name: 'Channel 8',
+                data: channelEig
+            }]
+        });
 
-    vOption.series[0].data[0].value = Number(velocityTmp[0]);
-    vOption.series[1].data[0].value = Number(velocityTmp[1]);
-    vOption.series[2].data[0].value = Number(velocityTmp[2]);
-    velocityChart.setOption(vOption,true);
+        vOption.series[0].data[0].value = Number(velocityTmp[0]);
+        vOption.series[1].data[0].value = Number(velocityTmp[1]);
+        vOption.series[2].data[0].value = Number(velocityTmp[2]);
+        velocityChart.setOption(vOption,true);
+
+    }
+    else if (message.destinationName == "Navigation"){
+        decision = dataTest.Navigation;
+        // decision = "a";
+
+        // time
+        now = new Date();
+        now.setTime(dataTest.TimeStamp * 1000);
+        dateTmp = now.toLocaleTimeString();
+
+        de = document.getElementById("decision");  //查找元素
+        de.innerHTML += "<p>" + dateTmp + " : " + decision + "</p>";
+        de.scrollTop = de.scrollHeight;
+    }
+
+
 }
             
 
@@ -629,8 +654,8 @@ renderer.gammaInput = true;
 renderer.gammaOutput = true;
 renderer.shadowMap.enabled = true;
 // STATS
-stats = new Stats();
-container.appendChild( stats.dom );
+// stats = new Stats();
+// container.appendChild( stats.dom );
 // EVENTS
 // window.addEventListener( 'resize', onWindowResize, false );
 // LOADER
