@@ -25,6 +25,8 @@ var channelThr = [];
 var channelFou = [];
 var channelFiv = [];
 var channelSix = [];
+var channelSev = [];
+var channelEig = [];
 
 var attitudeTmp = [0,0,0];
 
@@ -118,7 +120,7 @@ cOption = {
         trigger: 'axis'
     },
     legend: {
-        data:['Channel 1','Channel 2','Channel 3','Channel 4','Channel 5','Channel 6']
+        data:['Channel 1','Channel 2','Channel 3','Channel 4','Channel 5','Channel 6','Channel 7','Channel 8']
     },
     toolbox: {
         show: true,
@@ -222,6 +224,38 @@ cOption = {
             name:'Channel 6',
             type:'line',
             data: channelSix,
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name: '最小值'}
+                ]
+            },
+            markLine: {
+                data: [
+                    {type: 'average', name: '平均值'}
+                ]
+            }
+        },
+        {
+            name:'Channel 7',
+            type:'line',
+            data: channelSev,
+            markPoint: {
+                data: [
+                    {type: 'max', name: '最大值'},
+                    {type: 'min', name: '最小值'}
+                ]
+            },
+            markLine: {
+                data: [
+                    {type: 'average', name: '平均值'}
+                ]
+            }
+        },
+        {
+            name:'Channel 8',
+            type:'line',
+            data: channelEig,
             markPoint: {
                 data: [
                     {type: 'max', name: '最大值'},
@@ -432,6 +466,8 @@ function onMessageArrived(message) {
     channelFou.push(channelsTmp[3]);
     channelFiv.push(channelsTmp[4]);
     channelSix.push(channelsTmp[5]);
+    channelSev.push(channelsTmp[6]);
+    channelEig.push(channelsTmp[7]);
     // channelFiv.push(1500);
 
     // velocity
@@ -462,6 +498,9 @@ function onMessageArrived(message) {
         channelFou.shift();
         channelFiv.shift();
         channelSix.shift();
+        channelSev.shift();
+        channelEig.shift();
+
     };
 
     batteryChart.setOption({
@@ -511,6 +550,14 @@ function onMessageArrived(message) {
         {
             name: 'Channel 6',
             data: channelSix
+        },
+        {
+            name: 'Channel 7',
+            data: channelSev
+        },
+        {
+            name: 'Channel 8',
+            data: channelEig
         }]
     });
 
