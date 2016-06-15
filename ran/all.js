@@ -421,6 +421,15 @@ client.onMessageArrived = onMessageArrived;
 client.connect({onSuccess:onConnect});
 
 
+var container, stats;
+var camera, scene, renderer;
+var mesh, zmesh, geometry;
+var app = {};
+var textureLoader = new THREE.TextureLoader();
+var cubeTextureLoader = new THREE.CubeTextureLoader();
+init();
+
+
 // called when the client connects
 function onConnect() {
   // Once a connection has been made, make a subscription and send a message.
@@ -574,6 +583,8 @@ function onMessageArrived(message) {
         vOption.series[2].data[0].value = Number(velocityTmp[2]);
         velocityChart.setOption(vOption,true);
 
+        animate();
+
     }
     else if (message.destinationName == "Navigation"){
         decision = dataTest.Navigation;
@@ -606,88 +617,80 @@ velocityChart.setOption(vOption, true);
 } 
 
 
-var container, stats;
-var camera, scene, renderer;
-var mesh, zmesh, geometry;
-var app = {};
-var textureLoader = new THREE.TextureLoader();
-var cubeTextureLoader = new THREE.CubeTextureLoader();
-init();
-animate();
 function init() {
-container = document.getElementById('attitude');
-document.body.appendChild( container );
-camera = new THREE.PerspectiveCamera( 20, 600 / 300, 1, 2000 );
-camera.position.z = 190;
-scene = new THREE.Scene();
-scene.fog = new THREE.Fog( 0xffffff, 800, 2000 );
-var path = "textures/cube/SwedishRoyalCastle/";
-var format = '.jpg';
-var urls = [
-	path + 'px' + format, path + 'nx' + format,
-	path + 'py' + format, path + 'ny' + format,
-	path + 'pz' + format, path + 'nz' + format
-];
-reflectionCube = cubeTextureLoader.load( urls );
-// LIGHTS
-var ambient = new THREE.AmbientLight( 0x040404 );
-scene.add( ambient );
-var light = new THREE.SpotLight( 0xffeedd, 1.2, 650, Math.PI / 6 );
-light.position.set( 0, -100, 500 );
-light.castShadow = true;
-light.shadow.mapWidth = 1024;
-light.shadow.mapHeight = 1024;
-// scene.add( new THREE.CameraHelper( light.shadow.camera ) );
-scene.add( light );
-// RENDERER
-renderer = new THREE.WebGLRenderer( { 
-	antialias: true,
-	alpha: true
- } );
-renderer.setClearColor( scene.fog.color );
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( 440, 220 );
-renderer.domElement.style.position = "relative";
-container.appendChild( renderer.domElement );
-//
-renderer.gammaInput = true;
-renderer.gammaOutput = true;
-renderer.shadowMap.enabled = true;
-// STATS
-// stats = new Stats();
-// container.appendChild( stats.dom );
-// EVENTS
-// window.addEventListener( 'resize', onWindowResize, false );
-// LOADER
-var c = 0, s = Date.now();
+    container = document.getElementById('attitude');
+    document.body.appendChild( container );
+    camera = new THREE.PerspectiveCamera( 20, 600 / 300, 1, 2000 );
+    camera.position.z = 190;
+    scene = new THREE.Scene();
+    scene.fog = new THREE.Fog( 0xffffff, 800, 2000 );
+    var path = "textures/cube/SwedishRoyalCastle/";
+    var format = '.jpg';
+    var urls = [
+    	path + 'px' + format, path + 'nx' + format,
+    	path + 'py' + format, path + 'ny' + format,
+    	path + 'pz' + format, path + 'nz' + format
+    ];
+    reflectionCube = cubeTextureLoader.load( urls );
+    // LIGHTS
+    var ambient = new THREE.AmbientLight( 0x040404 );
+    scene.add( ambient );
+    var light = new THREE.SpotLight( 0xffeedd, 1.2, 650, Math.PI / 6 );
+    light.position.set( 0, -100, 500 );
+    light.castShadow = true;
+    light.shadow.mapWidth = 1024;
+    light.shadow.mapHeight = 1024;
+    // scene.add( new THREE.CameraHelper( light.shadow.camera ) );
+    scene.add( light );
+    // RENDERER
+    renderer = new THREE.WebGLRenderer( { 
+    	antialias: true,
+    	alpha: true
+     } );
+    renderer.setClearColor( scene.fog.color );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( 440, 220 );
+    renderer.domElement.style.position = "relative";
+    container.appendChild( renderer.domElement );
+    //
+    renderer.gammaInput = true;
+    renderer.gammaOutput = true;
+    renderer.shadowMap.enabled = true;
+    // STATS
+    // stats = new Stats();
+    // container.appendChild( stats.dom );
+    // EVENTS
+    // window.addEventListener( 'resize', onWindowResize, false );
+    // LOADER
+    var c = 0, s = Date.now();
 
-var loader = new THREE.CTMLoader();
-loader.load( "models/ctm/581.ctm",   function( geometry ) {
-	var material = new THREE.MeshLambertMaterial( { color: 0xffaa00, map: textureLoader.load( "textures/UV_Grid_Sm.jpg" ), envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3 } );
-	mesh = new THREE.Mesh( geometry, material );
-	mesh.position.set( 0, 0, 0 );
-	mesh.scale.set( 4, 4, 4 );
-	mesh.rotation.x = 3.3;
-	mesh.rotation.z = 3.1;
-	mesh.rotation.y = 0;
-	mesh.castShadow = true;
-	mesh.receiveShadow = true;
-	scene.add( mesh );
-}, { useWorker: true } );
+    var loader = new THREE.CTMLoader();
+    loader.load( "models/ctm/581.ctm",   function( geometry ) {
+    	var material = new THREE.MeshLambertMaterial( { color: 0xffaa00, map: textureLoader.load( "textures/UV_Grid_Sm.jpg" ), envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3 } );
+    	mesh = new THREE.Mesh( geometry, material );
+    	mesh.position.set( 0, 0, 0 );
+    	mesh.scale.set( 4, 4, 4 );
+    	mesh.rotation.x = 3.3;
+    	mesh.rotation.z = 3.1;
+    	mesh.rotation.y = 0;
+    	mesh.castShadow = true;
+    	mesh.receiveShadow = true;
+    	scene.add( mesh );
+    }, { useWorker: true } );
 }
 
 function animate() {
 
-requestAnimationFrame( animate );
-// console.log(typeof mesh);
-if (typeof mesh == "object")
-{
-	// mesh.rotation.x += 0.1;
-	mesh.rotation.x = 3.3 + Number(attitudeTmp[0]);
-    mesh.rotation.y = Number(attitudeTmp[1]);
-    mesh.rotation.z = 3.1 + Number(attitudeTmp[2]);
-}
-renderer.render( scene, camera );
+    requestAnimationFrame( animate );
+    // console.log(typeof mesh);
+    if (typeof mesh == "object")
+    {
+    	// mesh.rotation.x += 0.1;
+    	mesh.rotation.x = 3.3 + Number(attitudeTmp[0]);
+        mesh.rotation.y = Number(attitudeTmp[1]);
+        mesh.rotation.z = 3.1 + Number(attitudeTmp[2]);
+    }
+    renderer.render( scene, camera );
 
 }
 
