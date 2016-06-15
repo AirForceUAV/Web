@@ -685,7 +685,7 @@ if (typeof mesh == "object")
 	// mesh.rotation.x += 0.1;
 	mesh.rotation.x = 3.3 + Number(attitudeTmp[0]);
     mesh.rotation.y = Number(attitudeTmp[1]);
-    mesh.rotation.z = 3.1 - Number(attitudeTmp[2]);
+    mesh.rotation.z = 3.1 + Number(attitudeTmp[2]);
 }
 renderer.render( scene, camera );
 
