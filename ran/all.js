@@ -408,7 +408,7 @@ vOption = {
 };
 
 // Create a client instance
-client = new Paho.MQTT.Client("139.217.26.207", 9001, "myClientId");
+client = new Paho.MQTT.Client("101.201.55.168", 9001, "myClientId");
 
 // client = new Paho.MQTT.Client("test.mosquitto.org", 8080, "clientId");
 
@@ -684,7 +684,7 @@ if (typeof mesh == "object")
 {
 	// mesh.rotation.x += 0.1;
 	mesh.rotation.x = 3.3 + Number(attitudeTmp[0]);
-    mesh.rotation.y = -Number(attitudeTmp[1]);
+    mesh.rotation.y = Number(attitudeTmp[1]);
     mesh.rotation.z = 3.1 - Number(attitudeTmp[2]);
 }
 renderer.render( scene, camera );
