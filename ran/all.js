@@ -646,7 +646,7 @@ renderer = new THREE.WebGLRenderer( {
  } );
 renderer.setClearColor( scene.fog.color );
 renderer.setPixelRatio( window.devicePixelRatio );
-renderer.setSize( 450, 225 );
+renderer.setSize( 440, 220 );
 renderer.domElement.style.position = "relative";
 container.appendChild( renderer.domElement );
 //
